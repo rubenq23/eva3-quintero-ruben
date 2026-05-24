@@ -1,0 +1,5 @@
+$kind: http-request
+url: ""
+method: GET
+examples: .resources/Metodo PUT.resources/examples
+order: 292815824325074

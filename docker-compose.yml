@@ -1,0 +1,53 @@
+version: '3.8' # Se indica la versión de sintaxis de Docker Compose que se usa.
+
+services:
+  # --- SERVICIO DE LA APLICACIÓN (PHP-FPM + Laravel) ---
+  app:
+    build: . # Se construye la imagen usando el Dockerfile que está en la raíz del proyecto.
+    container_name: cliente-feliz # Se asigna un nombre único al contenedor PHP.
+    volumes:
+      - ./src:/var/www/html # Se sincroniza la carpeta src de tu máquina con /var/www/html dentro del contenedor.
+    networks:
+      - cliente-feliz-network # Se conecta este servicio a la red interna definida más abajo.
+
+  # --- SERVICIO DE NGINX (Servidor web) ---
+  nginx:
+    image: nginx:alpine # Se usa la imagen ligera de Nginx basada en Alpine Linux.
+    container_name: cliente-feliz-web # Se asigna un nombre único al contenedor Nginx.
+    ports:
+      - "8080:80" # Se expone el puerto 80 del contenedor en el puerto 8080 de tu máquina (acceso: http://localhost:8080).
+    volumes:
+      - ./src:/var/www/html # Se monta el código fuente en el contenedor Nginx.
+      - ./docker-config/nginx/default.conf:/etc/nginx/conf.d/default.conf 
+        # Se monta el archivo de configuración personalizado de Nginx.
+    depends_on:
+      - app # Se indica que Nginx debe esperar a que el contenedor PHP esté levantado antes de iniciar.
+    networks:
+      - cliente-feliz-network # Se conecta Nginx a la misma red interna.
+
+  # --- SERVICIO DE BASE DE DATOS (MySQL 8.0) ---
+  db:
+    image: mysql:8.0 # Se usa la imagen oficial de MySQL versión 8.0.
+    container_name: cliente-feliz-db # Se asigna un nombre único al contenedor MySQL.
+    restart: always # Se configura para que el contenedor se reinicie automáticamente si se detiene por error.
+    environment:
+      MYSQL_DATABASE: cliente-feliz # Se crea la base de datos inicial con este nombre.
+      MYSQL_ROOT_PASSWORD: root # Se define la contraseña del usuario root.
+      MYSQL_USER: laravel # Se crea un usuario adicional para tu aplicación Laravel.
+      MYSQL_PASSWORD: laravel # Se define la contraseña de ese usuario.
+    ports:
+      - "3306:3306" # Se expone el puerto 3306 del contenedor en el mismo puerto de tu máquina.
+    volumes:
+      - db_data:/var/lib/mysql # Se crea un volumen persistente para que los datos de MySQL no se pierdan al reiniciar.
+    networks:
+      - cliente-feliz-network # Se conecta MySQL a la misma red interna.
+
+# --- DEFINICIÓN DE REDES ---
+networks:
+  cliente-feliz-network:
+    driver: bridge # Se crea una red privada tipo bridge para que los contenedores se comuniquen entre sí.
+
+# --- DEFINICIÓN DE VOLUMENES ---
+volumes:
+  db_data:
+    driver: local # Se crea un volumen local en tu disco duro para persistir los datos de MySQL.

@@ -1,0 +1,32 @@
+$kind: http-example
+request:
+  url: localhost:8080/api/v1/postulaciones/3/estado
+  method: PATCH
+  body:
+    type: json
+    content: "{\r
+
+      \  \"estado\": \"Entrevista Personal\",\r
+
+      \  \"comentario\": \"El candidato demuestra dominio avanzado de transacciones SQL \"\r
+
+      }"
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    server: nginx/1.29.8
+    content-type: application/json
+    transfer-encoding: chunked
+    connection: keep-alive
+    x-powered-by: PHP/8.2.30
+    cache-control: no-cache, private
+    date: Wed, 06 May 2026 12:55:12 GMT
+    access-control-allow-origin: "*"
+  body:
+    type: json
+    content: |-
+      {
+        "mensaje": "Estado actualizado correctamente"
+      }
+order: 1778072713914

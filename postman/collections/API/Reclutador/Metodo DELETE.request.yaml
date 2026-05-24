@@ -1,0 +1,5 @@
+$kind: http-request
+url: ""
+method: GET
+examples: .resources/Metodo DELETE.resources/examples
+order: 4481812996708654

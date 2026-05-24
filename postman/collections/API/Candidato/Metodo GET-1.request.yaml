@@ -1,0 +1,6 @@
+$kind: http-request
+name: Metodo GET
+url: ""
+method: GET
+examples: .resources/Metodo GET-1.resources/examples
+order: 3570155695981269

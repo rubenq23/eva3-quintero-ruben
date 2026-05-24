@@ -1,0 +1,23 @@
+$kind: http-example
+request:
+  url: localhost:8080/api/v1/ofertas/1/
+  method: DELETE
+response:
+  statusCode: 200
+  statusText: OK
+  headers:
+    server: nginx/1.29.8
+    content-type: application/json
+    transfer-encoding: chunked
+    connection: keep-alive
+    x-powered-by: PHP/8.2.30
+    cache-control: no-cache, private
+    date: Wed, 06 May 2026 13:23:27 GMT
+    access-control-allow-origin: "*"
+  body:
+    type: json
+    content: |-
+      {
+        "mensaje": "Oferta desactivada (Baja lógica exitosa)"
+      }
+order: 1778073817056
