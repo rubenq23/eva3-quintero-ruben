@@ -1,38 +1,42 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\OfertaController;
-use App\Http\Controllers\Api\PostulacionController;
+use App\Http\Controllers\Api\PersonaController;
+use App\Http\Controllers\Api\AdminController;
+use App\Http\Controllers\Api\EmpresaController;
 
 Route::prefix('v1')->group(function () {
 
-    // --- RUTAS DE OFERTAS LABORALES ---
+    // --- HEALTH CHECK ---
+    Route::get('/health', function () {
+        return response()->json([
+            "status" => "online",
+            "service" => "ProviEmplea API",
+            "version" => "1.0.0",
+            "timestamp" => now()->toIso8601String()
+        ], 200);
+    });
 
-    // Obtener lista de ofertas activas para el Candidato
-    Route::get('/ofertas', [OfertaController::class, 'index']);
+    // --- PERSONAS ---
+    Route::get('/personas', [PersonaController::class, 'index']);
+    Route::post('/personas', [PersonaController::class, 'store']);
+    Route::get('/personas/{id}', [PersonaController::class, 'show']);
+    Route::put('/personas/{id}', [PersonaController::class, 'update']);
+    Route::delete('/personas/{id}', [PersonaController::class, 'destroy']);
+    Route::patch('/personas/{id}/validar', [PersonaController::class, 'validar']);
 
-    // Crear nueva oferta laboral (Perfil Reclutador)
-    Route::post('/ofertas', [OfertaController::class, 'store']);
+    // --- ADMINISTRACIÓN Y SELECCIÓN ---
+    Route::get('/admin/contactos', [AdminController::class, 'listarContactos']);
+    Route::post('/admin/contactos', [AdminController::class, 'crearContacto']);
+    Route::patch('/admin/contactos/{id}/estado', [AdminController::class, 'actualizarEstado']);
+    Route::get('/admin/estadisticas', [AdminController::class, 'estadisticas']);
 
-    // Edita información de una oferta existente (Perfil Reclutador)
-    Route::put('/ofertas/{id}', [OfertaController::class, 'update']);
-
-    //Desactiva oferta - Baja lógica (Perfil Reclutador)
-    Route::delete('/ofertas/{id}', [OfertaController::class, 'destroy']);
-
-    //Ver postulantes asociados a una oferta (Perfil Reclutador)
-    Route::get('/ofertas/{id}/postulaciones', [OfertaController::class, 'postulantes']);
-
-
-    //RUTAS DE POSTULACIONES
-
-    // Postula a una oferta específica (Perfil Candidato)
-    Route::post('/postulaciones', [PostulacionController::class, 'store']);
-
-    //Ver estado y comentarios de una postulación (Perfil Candidato)
-    Route::get('/postulaciones/{id}', [PostulacionController::class, 'show']);
-
-    //Actualizar estado y registrar comentarios (Perfil Reclutador)
-    Route::patch('/postulaciones/{id}/estado', [PostulacionController::class, 'actualizarEstado']);
+    // --- EMPRESAS ---
+        Route::get('/empresas', [\App\Http\Controllers\Api\EmpresaController::class, 'index']);
+        Route::post('/empresas', [\App\Http\Controllers\Api\EmpresaController::class, 'store']);
+        Route::get('/empresas/{id}', [\App\Http\Controllers\Api\EmpresaController::class, 'show']);
+        Route::put('/empresas/{id}', [\App\Http\Controllers\Api\EmpresaController::class, 'update']);
+        Route::delete('/empresas/{id}', [\App\Http\Controllers\Api\EmpresaController::class, 'destroy']);
+        Route::patch('/empresas/{id}/validar', [\App\Http\Controllers\Api\EmpresaController::class, 'validar']);
 
 });
