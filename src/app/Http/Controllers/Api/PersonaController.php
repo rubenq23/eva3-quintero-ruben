@@ -38,7 +38,7 @@ class PersonaController extends Controller
                 "modalidad" => $persona->modalidad,
                 "persona_discapacidad" => $persona->persona_discapacidad
             ];
-        ]);
+        });
 
         return response()->json(["success" => true, "data" => $personas], 200);
     }
@@ -71,42 +71,50 @@ class PersonaController extends Controller
     public function show($id): JsonResponse
     {
         $persona = Persona::find($id);
+
         if (!$persona) {
             return response()->json(["success" => false, "message" => "Persona no encontrada."], 404);
         }
+
         return response()->json(["success" => true, "data" => $persona], 200);
     }
 
     public function update(Request $request, $id): JsonResponse
     {
         $persona = Persona::find($id);
+
         if (!$persona) {
             return response()->json(["success" => false, "message" => "Persona no encontrada."], 404);
         }
 
         $persona->update($request->all());
+
         return response()->json(["success" => true, "data" => $persona], 200);
     }
 
     public function destroy($id): JsonResponse
     {
         $persona = Persona::find($id);
+
         if (!$persona) {
             return response()->json(["success" => false, "message" => "Persona no encontrada."], 404);
         }
 
         $persona->update(['activo' => false]);
+
         return response()->json(["success" => true, "data" => ["message" => "Persona desactivada exitosamente."]], 200);
     }
 
     public function validar($id): JsonResponse
     {
         $persona = Persona::find($id);
+
         if (!$persona) {
             return response()->json(["success" => false, "message" => "Persona no encontrada."], 404);
         }
 
         $persona->update(['validado' => true]);
+
         return response()->json(["success" => true, "data" => $persona], 200);
     }
 }

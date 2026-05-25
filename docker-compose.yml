@@ -15,7 +15,7 @@ services:
     image: nginx:alpine # Se usa la imagen ligera de Nginx basada en Alpine Linux.
     container_name: cliente-feliz-web # Se asigna un nombre único al contenedor Nginx.
     ports:
-      - "8080:80" # Se expone el puerto 80 del contenedor en el puerto 8080 de tu máquina (acceso: http://localhost:8080).
+      - "8080:80" # Se expone el puerto 80 del contenedor en el puerto 8080 máquina (acceso: http://localhost:8080).
     volumes:
       - ./src:/var/www/html # Se monta el código fuente en el contenedor Nginx.
       - ./docker-config/nginx/default.conf:/etc/nginx/conf.d/default.conf 

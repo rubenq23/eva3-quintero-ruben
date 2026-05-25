@@ -25,7 +25,7 @@ Route::prefix('v1')->group(function () {
     Route::delete('/personas/{id}', [PersonaController::class, 'destroy']);
     Route::patch('/personas/{id}/validar', [PersonaController::class, 'validar']);
 
-    // --- ADMINISTRACIÓN Y SELECCIÓN ---
+    // --- ADMINISTRACION Y SELECCION ---
     Route::get('/admin/contactos', [AdminController::class, 'listarContactos']);
     Route::post('/admin/contactos', [AdminController::class, 'crearContacto']);
     Route::patch('/admin/contactos/{id}/estado', [AdminController::class, 'actualizarEstado']);
