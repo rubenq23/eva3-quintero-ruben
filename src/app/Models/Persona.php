@@ -14,7 +14,7 @@ class Persona extends Model
 
     protected $fillable = [
         'id', 'email', 'telefono', 'codigo_talento', 'resumen', 'nivel_educacional',
-        'titulo_carrera', 'anio_egreso', 'anios_experiencia', 'competencias',
+        'titulo_carrera', 'año_egreso', 'años_experiencia', 'competencias',
         'areas_experiencia', 'rango_renta', 'tipo_jornada', 'modalidad',
         'cursos', 'idiomas', 'persona_discapacidad', 'validado', 'activo', 'porcentaje_completitud'
     ];
