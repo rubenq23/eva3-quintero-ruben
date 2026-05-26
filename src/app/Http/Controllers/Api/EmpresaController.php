@@ -1,115 +1,176 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Empresa;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Validation\Rule;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class EmpresaController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/empresas",
+     *     operationId="getEmpresas",
+     *     tags={"Empresas"},
+     *     summary="Listar empresas validadas",
+     *     @OA\Parameter(name="tipo_empresa", in="query", required=false,
+     *         @OA\Schema(type="string", enum={"contratacion-directa","est","outsourcing"})),
+     *     @OA\Response(response=200, description="Listado exitoso",
+     *         @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Empresa")))
+     * )
+     */
     public function index(Request $request): JsonResponse
     {
         $query = Empresa::where('activo', true);
-
-        // Filtro opcional por tipo de empresa
         if ($request->has('tipo_empresa')) {
-            $query->where('tipo_empresa', $request->tipo_empresa);
+            $query->where('tipo_empresa', $request->input('tipo_empresa'));
         }
-
-        return response()->json(["success" => true, "data" => $query->get()], 200);
+        return $this->successResponse($query->get());
     }
 
+    /**
+     * @OA\Post(
+     *     path="/empresas",
+     *     operationId="createEmpresa",
+     *     tags={"Empresas"},
+     *     summary="Registrar nueva empresa",
+     *     @OA\RequestBody(required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/EmpresaInput")),
+     *     @OA\Response(response=201, description="Empresa creada",
+     *         @OA\JsonContent(ref="#/components/schemas/Empresa")),
+     *     @OA\Response(response=422, description="Errores de validación")
+     * )
+     */
     public function store(Request $request): JsonResponse
     {
-        $validated = $request->validate([
-            'nombre_empresa' => 'required|string|max:255',
-            // Regex valida formato chileno estricto: 12345678-9 o 1234567-K
-            'rut_empresa' => ['required', 'string', 'regex:/^\d{7,8}-[\dKk]$/', 'unique:empresas,rut_empresa'],
-            'email' => 'required|email|unique:empresas,email',
-            'tipo_empresa' => 'required|in:contratacion-directa,est,outsourcing',
-            'contacto_nombre' => 'required|string|max:255',
-            'contacto_email' => 'required|email',
-            'logo_url' => 'nullable|url',
-            'rubro' => 'nullable|string|max:255',
-            'presentacion' => 'nullable|string',
-            'beneficios' => 'nullable|array',
+        $validator = Validator::make($request->all(), [
+            'nombre_empresa'    => 'required|string|max:255',
+            'rut_empresa'       => 'required|string|max:20|unique:empresas,rut_empresa',
+            'email'             => 'required|email|unique:empresas,email',
+            'logo_url'          => 'nullable|url',
+            'rubro'             => 'nullable|string|max:100',
+            'tipo_empresa'      => 'required|in:contratacion-directa,est,outsourcing',
+            'presentacion'      => 'nullable|string',
+            'beneficios'        => 'nullable|array',
+            'beneficios.*'      => 'string',
+            'contacto_nombre'   => 'required|string|max:100',
+            'contacto_email'    => 'required|email',
             'contacto_telefono' => 'nullable|string|max:20',
         ]);
 
-        $empresa = Empresa::create($validated);
-
-        return response()->json(["success" => true, "data" => $empresa], 201);
-    }
-
-    public function show($id): JsonResponse
-    {
-        $empresa = Empresa::find($id);
-
-        if (!$empresa) {
-            return response()->json(["success" => false, "message" => "Empresa no encontrada."], 404);
+        if ($validator->fails()) {
+            return $this->errorResponse('Los datos enviados no son válidos.', 422, $validator->errors()->toArray());
         }
 
-        return response()->json(["success" => true, "data" => $empresa], 200);
+        return $this->successResponse(Empresa::create($validator->validated()), 201);
     }
 
-    public function update(Request $request, $id): JsonResponse
+    /**
+     * @OA\Get(
+     *     path="/empresas/{id}",
+     *     operationId="getEmpresa",
+     *     tags={"Empresas"},
+     *     summary="Obtener empresa por ID",
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Empresa encontrada",
+     *         @OA\JsonContent(ref="#/components/schemas/Empresa")),
+     *     @OA\Response(response=404, description="No encontrada")
+     * )
+     */
+    public function show(int $empresa): JsonResponse
     {
-        $empresa = Empresa::find($id);
+        $model = Empresa::find($empresa);
+        if (!$model) {
+            return $this->errorResponse('Empresa no encontrada.', 404);
+        }
+        return $this->successResponse($model);
+    }
 
-        if (!$empresa) {
-            return response()->json(["success" => false, "message" => "Empresa no encontrada."], 404);
+    /**
+     * @OA\Put(
+     *     path="/empresas/{id}",
+     *     operationId="updateEmpresa",
+     *     tags={"Empresas"},
+     *     summary="Actualizar empresa",
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\RequestBody(required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/EmpresaInput")),
+     *     @OA\Response(response=200, description="Empresa actualizada"),
+     *     @OA\Response(response=404, description="No encontrada")
+     * )
+     */
+    public function update(Request $request, int $empresa): JsonResponse
+    {
+        $model = Empresa::find($empresa);
+        if (!$model) {
+            return $this->errorResponse('Empresa no encontrada.', 404);
         }
 
-        $validated = $request->validate([
-            'nombre_empresa' => 'sometimes|required|string|max:255',
-            // Se usa Rule::unique para ignorar el ID actual y no arrojar error de "RUT ya existe" si no lo cambia
-            'rut_empresa' => ['sometimes', 'required', 'string', 'regex:/^\d{7,8}-[\dKk]$/', Rule::unique('empresas')->ignore($empresa->id)],
-            'email' => ['sometimes', 'required', 'email', Rule::unique('empresas')->ignore($empresa->id)],
-            'tipo_empresa' => 'sometimes|required|in:contratacion-directa,est,outsourcing',
-            'contacto_nombre' => 'sometimes|required|string|max:255',
-            'contacto_email' => 'sometimes|required|email',
-            'logo_url' => 'nullable|url',
-            'rubro' => 'nullable|string|max:255',
-            'presentacion' => 'nullable|string',
-            'beneficios' => 'nullable|array',
+        $validator = Validator::make($request->all(), [
+            'nombre_empresa'    => 'sometimes|string|max:255',
+            'rut_empresa'       => 'sometimes|string|max:20|unique:empresas,rut_empresa,' . $model->id,
+            'email'             => 'sometimes|email|unique:empresas,email,' . $model->id,
+            'logo_url'          => 'nullable|url',
+            'rubro'             => 'nullable|string|max:100',
+            'tipo_empresa'      => 'sometimes|in:contratacion-directa,est,outsourcing',
+            'presentacion'      => 'nullable|string',
+            'beneficios'        => 'nullable|array',
+            'beneficios.*'      => 'string',
+            'contacto_nombre'   => 'sometimes|string|max:100',
+            'contacto_email'    => 'sometimes|email',
             'contacto_telefono' => 'nullable|string|max:20',
         ]);
 
-        $empresa->update($validated);
-
-        return response()->json(["success" => true, "data" => $empresa], 200);
-    }
-
-    public function destroy($id): JsonResponse
-    {
-        $empresa = Empresa::find($id);
-
-        if (!$empresa) {
-            return response()->json(["success" => false, "message" => "Empresa no encontrada."], 404);
+        if ($validator->fails()) {
+            return $this->errorResponse('Los datos enviados no son válidos.', 422, $validator->errors()->toArray());
         }
 
-        // Baja lógica
-        $empresa->update(['activo' => false]);
-
-        return response()->json([
-            "success" => true,
-            "data" => ["message" => "Empresa desactivada exitosamente."]
-        ], 200);
+        $model->update($validator->validated());
+        return $this->successResponse($model->fresh());
     }
 
-    public function validar($id): JsonResponse
+    /**
+     * @OA\Patch(
+     *     path="/empresas/{id}/validar",
+     *     operationId="validarEmpresa",
+     *     tags={"Empresas"},
+     *     summary="Validar empresa (solo administración)",
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Empresa validada"),
+     *     @OA\Response(response=404, description="No encontrada")
+     * )
+     */
+    public function validar(int $empresa): JsonResponse
     {
-        $empresa = Empresa::find($id);
-
-        if (!$empresa) {
-            return response()->json(["success" => false, "message" => "Empresa no encontrada."], 404);
+        $model = Empresa::find($empresa);
+        if (!$model) {
+            return $this->errorResponse('Empresa no encontrada.', 404);
         }
+        $model->update(['validado' => true]);
+        return $this->successResponse(['message' => 'Empresa validada exitosamente.', 'data' => $model->fresh()]);
+    }
 
-        $empresa->update(['validado' => true]);
-
-        return response()->json(["success" => true, "data" => $empresa], 200);
+    /**
+     * @OA\Delete(
+     *     path="/empresas/{id}",
+     *     operationId="deleteEmpresa",
+     *     tags={"Empresas"},
+     *     summary="Desactivar empresa",
+     *     description="Desactiva el perfil sin eliminarlo de la base de datos.",
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *     @OA\Response(response=200, description="Empresa desactivada"),
+     *     @OA\Response(response=404, description="No encontrada")
+     * )
+     */
+    public function destroy(int $empresa): JsonResponse
+    {
+        $model = Empresa::find($empresa);
+        if (!$model) {
+            return $this->errorResponse('Empresa no encontrada.', 404);
+        }
+        $model->update(['activo' => false]);
+        return $this->successResponse(['message' => 'Empresa desactivada exitosamente.']);
     }
 }
