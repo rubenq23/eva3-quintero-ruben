@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PersonaController;
-use App\Http\Controllers\Api\AdminController;
+use App\Http\Controllers\Api\AdministracionController;
 use App\Http\Controllers\Api\EmpresaController;
 
 Route::prefix('v1')->group(function () {
