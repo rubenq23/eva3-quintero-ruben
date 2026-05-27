@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Schemas;
 
+use OpenApi\Annotations as OA;
+
 /**
  * @OA\Schema(
- *     schema="PersonaInput",
- *     title="Persona Input",
- *     description="Datos para crear o actualizar una persona",
- *     required={"email"}
+ * schema="PersonaInput",
+ * title="Persona Input",
+ * description="Datos para crear o actualizar una persona",
+ * required={"email"}
  * )
  */
 class PersonaInputSchema
@@ -22,18 +24,18 @@ class PersonaInputSchema
     public ?string $nivel_educacional;
     /** @OA\Property(property="titulo_carrera",    type="string", nullable=true) */
     public ?string $titulo_carrera;
-    /** @OA\Property(property="anio_egreso",       type="integer", example=2020, nullable=true) */
-    public ?int $anio_egreso;
-    /** @OA\Property(property="anios_experiencia", type="integer", example=3, nullable=true) */
-    public ?int $anios_experiencia;
+    /** @OA\Property(property="año_egreso",        type="integer", example=2020, nullable=true) */
+    public ?int $año_egreso;
+    /** @OA\Property(property="años_experiencia",  type="integer", example=3, nullable=true) */
+    public ?int $años_experiencia;
     /**
      * @OA\Property(property="areas_experiencia", type="array",
-     *     @OA\Items(type="string"), example={"Desarrollo Web"}, nullable=true)
+     * @OA\Items(type="string"), example={"Desarrollo Web"}, nullable=true)
      */
     public ?array $areas_experiencia;
     /**
      * @OA\Property(property="competencias", type="array",
-     *     @OA\Items(type="string"), example={"PHP", "Laravel"}, nullable=true)
+     * @OA\Items(type="string"), example={"PHP", "Laravel"}, nullable=true)
      */
     public ?array $competencias;
     /** @OA\Property(property="rango_renta",  type="string", example="500k-800k", nullable=true) */

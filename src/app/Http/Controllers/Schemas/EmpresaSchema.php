@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Schemas;
 
+use OpenApi\Annotations as OA;
+
 /**
  * @OA\Schema(
- *     schema="Empresa",
- *     title="Empresa",
- *     description="Modelo completo de empresa empleadora",
- *     required={"nombre_empresa", "rut_empresa", "email", "tipo_empresa", "contacto_nombre", "contacto_email"}
+ * schema="Empresa",
+ * title="Empresa",
+ * description="Modelo completo de empresa empleadora",
+ * required={"nombre_empresa", "rut_empresa", "email", "tipo_empresa", "contacto_nombre", "contacto_email"}
  * )
  */
 class EmpresaSchema
@@ -30,7 +32,7 @@ class EmpresaSchema
     public ?string $presentacion;
     /**
      * @OA\Property(property="beneficios", type="array",
-     *     @OA\Items(type="string"), example={"Seguro complementario","Trabajo remoto"}, nullable=true)
+     * @OA\Items(type="string"), example={"Seguro complementario","Trabajo remoto"}, nullable=true)
      */
     public ?array $beneficios;
     /** @OA\Property(property="contacto_nombre",   type="string", example="Ana López") */
@@ -48,4 +50,3 @@ class EmpresaSchema
     /** @OA\Property(property="updated_at", type="string", format="date-time") */
     public string $updated_at;
 }
-

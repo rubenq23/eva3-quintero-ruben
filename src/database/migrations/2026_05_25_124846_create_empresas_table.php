@@ -24,6 +24,7 @@ return new class extends Migration
 
             $table->string('contacto_nombre');
             $table->string('contacto_email');
+            $table->string('contacto_telefono')->nullable(); // Añadido para coincidir con tu modelo
 
             $table->boolean('validado')->default(false);
             $table->boolean('activo')->default(true);

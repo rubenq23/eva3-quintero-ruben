@@ -3,37 +3,32 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Str;
+use OpenApi\Attributes as OA;
 
+#[OA\Schema(
+    schema: 'Empresa',
+    required: ['id', 'nombre_empresa', 'rut_empresa'],
+    properties: [
+        new OA\Property(property: 'id', type: 'string'),
+        new OA\Property(property: 'nombre_empresa', type: 'string'),
+        new OA\Property(property: 'rut_empresa', type: 'string'),
+        new OA\Property(property: 'email', type: 'string'),
+        new OA\Property(property: 'tipo_empresa', type: 'string'),
+        new OA\Property(property: 'activo', type: 'boolean'),
+        new OA\Property(property: 'validado', type: 'boolean')
+    ]
+)]
 class Empresa extends Model
 {
-    protected $table = 'empresas';
-    protected $keyType = 'string';
-    public $incrementing = false;
-
     protected $fillable = [
-        'id', 'nombre_empresa', 'rut_empresa', 'email', 'tipo_empresa',
-        'rubro', 'beneficios', 'contacto_nombre', 'contacto_email', 'validado', 'activo'
+        'nombre_empresa', 'rut_empresa', 'email', 'logo_url', 'rubro',
+        'tipo_empresa', 'presentacion', 'beneficios', 'contacto_nombre',
+        'contacto_email', 'contacto_telefono', 'activo', 'validado'
     ];
 
     protected $casts = [
         'beneficios' => 'array',
-        'validado' => 'boolean',
         'activo' => 'boolean',
+        'validado' => 'boolean',
     ];
-
-    protected static function booted()
-    {
-        static::creating(function ($empresa) {
-            $empresa->id = (string) Str::uuid();
-            $empresa->activo = true;
-            $empresa->validado = false;
-        });
-    }
-
-    public function solicitudes(): HasMany
-    {
-        return $this->hasMany(ContactoSolicitado::class, 'empresa_id');
-    }
 }

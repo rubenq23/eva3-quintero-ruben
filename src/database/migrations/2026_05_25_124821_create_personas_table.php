@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('telefono')->nullable();
             $table->string('nivel_educacional')->nullable();
             $table->string('titulo_carrera')->nullable();
-            $table->integer('anio_egreso')->nullable();
-            $table->integer('anios_experiencia')->nullable();
+            $table->integer('año_egreso')->nullable();
+            $table->integer('años_experiencia')->nullable();
 
             // Campos JSON para almacenar arreglos
             $table->json('competencias')->nullable();
