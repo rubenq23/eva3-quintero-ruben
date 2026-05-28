@@ -13,8 +13,13 @@ use OpenApi\Attributes as OA;
 
 class AdministracionController extends Controller
 {
+    /**USO DE SWAGGER UI PARA IDENTIFICAR ERRORES
+    Al igual que en los otros controladores, mis path deben incluir el prefijo v1
+    para ser consistentes con mis rutas en api.php.
+     */
+
     #[OA\Get(
-        path: '/admin/contactos',
+        path: '/v1/admin/contactos',
         operationId: 'getContactosSolicitados',
         tags: ['Administración'],
         summary: 'Listar contactos solicitados',
@@ -47,7 +52,7 @@ class AdministracionController extends Controller
     }
 
     #[OA\Post(
-        path: '/admin/contactos',
+        path: '/v1/admin/contactos',
         operationId: 'crearContactoSolicitado',
         tags: ['Administración'],
         summary: 'Registrar solicitud de contacto',
@@ -92,13 +97,12 @@ class AdministracionController extends Controller
     }
 
     #[OA\Patch(
-        path: '/admin/contactos/{id}/estado',
+        path: '/v1/admin/contactos/{id}/estado',
         operationId: 'actualizarEstadoContacto',
         tags: ['Administración'],
         summary: 'Actualizar estado de contacto',
-        description: 'Cambia el estado del proceso.',
         parameters: [
-            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))
+            new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'string')) //aca estaba mi error
         ],
         requestBody: new OA\RequestBody(
             required: true,
@@ -119,7 +123,7 @@ class AdministracionController extends Controller
             new OA\Response(response: 404, description: 'Contacto no encontrado')
         ]
     )]
-    public function actualizarEstado(Request $request, int $contacto): JsonResponse
+    public function actualizarEstado(Request $request, string $contacto): JsonResponse
     {
         $model = ContactoSolicitado::find($contacto);
         if (!$model) {
@@ -137,6 +141,7 @@ class AdministracionController extends Controller
 
         $data = $validator->validated();
 
+        // Lógica de fechas automatizada
         if ($data['estado'] === 'contactado' && !$model->fecha_contacto) {
             $data['fecha_contacto'] = now();
         } elseif ($data['estado'] === 'entrevista' && !$model->fecha_entrevista) {
@@ -150,7 +155,7 @@ class AdministracionController extends Controller
     }
 
     #[OA\Get(
-        path: '/admin/estadisticas',
+        path: '/v1/admin/estadisticas',
         operationId: 'getEstadisticas',
         tags: ['Administración'],
         summary: 'Estadísticas generales de la plataforma',

@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('tipo_empresa');
             $table->string('rubro')->nullable();
 
-            // Columna corregida: Añadida para evitar el error 1054
+            // Columna añadida para evitar el error
             $table->text('presentacion')->nullable();
 
             // Campo JSON para lista de beneficios

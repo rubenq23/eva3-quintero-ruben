@@ -12,7 +12,7 @@
         }
     ],
     "paths": {
-        "/admin/contactos": {
+        "/v1/admin/contactos": {
             "get": {
                 "tags": [
                     "Administración"
@@ -90,13 +90,12 @@
                 }
             }
         },
-        "/admin/contactos/{id}/estado": {
+        "/v1/admin/contactos/{id}/estado": {
             "patch": {
                 "tags": [
                     "Administración"
                 ],
                 "summary": "Actualizar estado de contacto",
-                "description": "Cambia el estado del proceso.",
                 "operationId": "actualizarEstadoContacto",
                 "parameters": [
                     {
@@ -104,7 +103,7 @@
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -155,7 +154,7 @@
                 }
             }
         },
-        "/admin/estadisticas": {
+        "/v1/admin/estadisticas": {
             "get": {
                 "tags": [
                     "Administración"
@@ -449,9 +448,9 @@
                         "application/json": {
                             "schema": {},
                             "example": {
-                                "email": "talento@ejemplo.cl",
-                                "nombre": "Juan",
-                                "apellido": "Pérez",
+                                "email": "rubenquintero@ejemplo.cl",
+                                "nombre": "Ruben",
+                                "apellido": "Quintero",
                                 "nivel_educacional": "universitaria"
                             }
                         }
@@ -670,7 +669,37 @@
                     },
                     "tipo_empresa": {
                         "type": "string",
-                        "example": "Startup"
+                        "example": "Contratacion-directa"
+                    },
+                    "rubro": {
+                        "type": "string",
+                        "example": "Tecnología"
+                    },
+                    "presentacion": {
+                        "type": "string",
+                        "example": "Breve descripción de la empresa."
+                    },
+                    "beneficios": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "Seguro de salud",
+                            "Aguinaldos"
+                        ]
+                    },
+                    "contacto_nombre": {
+                        "type": "string",
+                        "example": "Juan Pérez"
+                    },
+                    "contacto_email": {
+                        "type": "string",
+                        "example": "juan.perez@empresa.cl"
+                    },
+                    "contacto_telefono": {
+                        "type": "string",
+                        "example": "+56912345678"
                     },
                     "activo": {
                         "type": "boolean",
@@ -747,7 +776,7 @@
                     "email": {
                         "type": "string",
                         "format": "email",
-                        "example": "talento@ejemplo.cl"
+                        "example": "ruben.quintero@ejemplo.cl"
                     },
                     "codigo_talento": {
                         "type": "string",
@@ -755,11 +784,11 @@
                     },
                     "nombre": {
                         "type": "string",
-                        "example": "Juan"
+                        "example": "Ruben"
                     },
                     "apellido": {
                         "type": "string",
-                        "example": "Pérez"
+                        "example": "Quintero"
                     },
                     "nivel_educacional": {
                         "type": "string",

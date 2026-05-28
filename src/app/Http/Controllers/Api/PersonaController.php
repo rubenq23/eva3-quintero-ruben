@@ -49,9 +49,9 @@ class PersonaController extends Controller
             required: true,
             content: new OA\JsonContent(
                 example: [
-                    "email" => "talento@ejemplo.cl",
-                    "nombre" => "Juan",
-                    "apellido" => "Pérez",
+                    "email" => "rubenquintero@ejemplo.cl",
+                    "nombre" => "Ruben",
+                    "apellido" => "Quintero",
                     "nivel_educacional" => "universitaria"
                 ]
             )
