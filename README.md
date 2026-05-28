@@ -1,5 +1,7 @@
 # eva3_quintero_ruben
 
+Este repositorio almacena la evaluacion numero 3 del ramo Desarrollo Backend, aparte de la logica del codigo, en este archivo se especifica el flujo para poder probar los modulos en Swagger UI siguiendo la logica del negocio.
+
 Flujo para testear Modulo Personas en Swagger UI
 
 1.	Registrar un nuevo talento
