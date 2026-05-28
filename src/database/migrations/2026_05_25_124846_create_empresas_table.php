@@ -6,6 +6,13 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**SWAGGER PARA IDENTIFICAR ERROR EN BASE DE DATOS
+    Al intentar realizar el POST, recibía un error 500 indicando que la columna
+    'presentacion' no existía.
+    Corregí mi archivo de migración añadiendo la columna faltante
+    para que coincida exactamente con mi modelo Empresa.php.
+    Ejecute migrate:fresh para sincronizar la BD.
+     */
     public function up(): void
     {
         Schema::create('empresas', function (Blueprint $table) {
@@ -19,12 +26,15 @@ return new class extends Migration
             $table->string('tipo_empresa');
             $table->string('rubro')->nullable();
 
+            // Columna corregida: Añadida para evitar el error 1054
+            $table->text('presentacion')->nullable();
+
             // Campo JSON para lista de beneficios
             $table->json('beneficios')->nullable();
 
             $table->string('contacto_nombre');
             $table->string('contacto_email');
-            $table->string('contacto_telefono')->nullable(); // Añadido para coincidir con tu modelo
+            $table->string('contacto_telefono')->nullable();
 
             $table->boolean('validado')->default(false);
             $table->boolean('activo')->default(true);

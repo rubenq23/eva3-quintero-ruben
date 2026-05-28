@@ -206,7 +206,7 @@
                 }
             }
         },
-        "/empresas": {
+        "/v1/empresas": {
             "get": {
                 "tags": [
                     "Empresas"
@@ -277,7 +277,7 @@
                 }
             }
         },
-        "/empresas/{id}": {
+        "/v1/empresas/{id}": {
             "get": {
                 "tags": [
                     "Empresas"
@@ -371,7 +371,7 @@
                 }
             }
         },
-        "/empresas/{id}/validar": {
+        "/v1/empresas/{id}/validar": {
             "patch": {
                 "tags": [
                     "Empresas"
@@ -651,25 +651,34 @@
                 ],
                 "properties": {
                     "id": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
                     },
                     "nombre_empresa": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "Empresa Ejemplo S.A."
                     },
                     "rut_empresa": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "12.345.678-9"
                     },
                     "email": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "email",
+                        "example": "contacto@empresa.cl"
                     },
                     "tipo_empresa": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "Startup"
                     },
                     "activo": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "example": true
                     },
                     "validado": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "example": false
                     }
                 },
                 "type": "object"

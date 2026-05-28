@@ -11,8 +11,14 @@ use OpenApi\Attributes as OA;
 
 class EmpresaController extends Controller
 {
+    /**USO DE SWAGGER UI PARA IDENTIFICAR ERRORES
+    Mis path no tenian el prefijo v1 (el que defini en mi ruta en api.php)
+    por eso al presionar try it out me daban un 404.
+    Corregi el path y funciono con una respuesta 201.
+     */
+
     #[OA\Get(
-        path: '/empresas',
+        path: '/v1/empresas',
         operationId: 'getEmpresas',
         tags: ['Empresas'],
         summary: 'Listar empresas validadas',
@@ -33,11 +39,16 @@ class EmpresaController extends Controller
     }
 
     #[OA\Post(
-        path: '/empresas',
+        path: '/v1/empresas',
         operationId: 'createEmpresa',
         tags: ['Empresas'],
         summary: 'Registrar nueva empresa',
-        requestBody: new OA\RequestBody(required: true, content: new OA\JsonContent(ref: '#/components/schemas/EmpresaInput')),
+        // --- Ejemplo detallado en el requestBody ---
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: '#/components/schemas/EmpresaInput')
+        ),
+        // -----------------------------------------------------------------
         responses: [
             new OA\Response(response: 201, description: 'Empresa creada', content: new OA\JsonContent(ref: '#/components/schemas/Empresa')),
             new OA\Response(response: 422, description: 'Errores de validación')
@@ -54,7 +65,6 @@ class EmpresaController extends Controller
             'tipo_empresa'      => 'required|in:contratacion-directa,est,outsourcing',
             'presentacion'      => 'nullable|string',
             'beneficios'        => 'nullable|array',
-            'beneficios.*'      => 'string',
             'contacto_nombre'   => 'required|string|max:100',
             'contacto_email'    => 'required|email',
             'contacto_telefono' => 'nullable|string|max:20',
@@ -68,7 +78,7 @@ class EmpresaController extends Controller
     }
 
     #[OA\Get(
-        path: '/empresas/{id}',
+        path: '/v1/empresas/{id}',
         operationId: 'getEmpresa',
         tags: ['Empresas'],
         summary: 'Obtener empresa por ID',
@@ -85,12 +95,14 @@ class EmpresaController extends Controller
     }
 
     #[OA\Put(
-        path: '/empresas/{id}',
+        path: '/v1/empresas/{id}',
         operationId: 'updateEmpresa',
         tags: ['Empresas'],
         summary: 'Actualizar empresa',
         parameters: [new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'string'))],
+        // --- Ejemplo detallado en el requestBody ---
         requestBody: new OA\RequestBody(required: true, content: new OA\JsonContent(ref: '#/components/schemas/EmpresaInput')),
+        // -----------------------------------------------------------------
         responses: [
             new OA\Response(response: 200, description: 'Empresa actualizada'),
             new OA\Response(response: 404, description: 'No encontrada')
@@ -117,7 +129,7 @@ class EmpresaController extends Controller
     }
 
     #[OA\Patch(
-        path: '/empresas/{id}/validar',
+        path: '/v1/empresas/{id}/validar',
         operationId: 'validarEmpresa',
         tags: ['Empresas'],
         summary: 'Validar empresa',
@@ -131,7 +143,7 @@ class EmpresaController extends Controller
     }
 
     #[OA\Delete(
-        path: '/empresas/{id}',
+        path: '/v1/empresas/{id}',
         operationId: 'deleteEmpresa',
         tags: ['Empresas'],
         summary: 'Desactivar empresa',
