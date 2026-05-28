@@ -4,7 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PersonaController;
 use App\Http\Controllers\Api\AdministracionController;
 use App\Http\Controllers\Api\EmpresaController;
-
+/**Este es el prefijo al que me refiero en mi PersonaController.php
+PRIMER ERROR Encontrado usando Swagger UI*/
 Route::prefix('v1')->group(function () {
 
     // --- HEALTH CHECK ---
@@ -26,10 +27,13 @@ Route::prefix('v1')->group(function () {
     Route::patch('/personas/{id}/validar', [PersonaController::class, 'validar']);
 
     // --- ADMINISTRACION Y SELECCION ---
-    Route::get('/admin/contactos', [AdminController::class, 'listarContactos']);
-    Route::post('/admin/contactos', [AdminController::class, 'crearContacto']);
-    Route::patch('/admin/contactos/{id}/estado', [AdminController::class, 'actualizarEstado']);
-    Route::get('/admin/estadisticas', [AdminController::class, 'estadisticas']);
+    /**SEGUNDO ERROR Encontrado usando Swagger UI
+     Me fije que tenia un error en mi ruta estaba invocando al metodo con un error de escritura AdminController::class
+     En lungar de usar AdministracionController::class*/
+    Route::get('/admin/contactos', [AdministracionController::class, 'listarContactos']);
+    Route::post('/admin/contactos', [AdministracionController::class, 'crearContacto']);
+    Route::patch('/admin/contactos/{id}/estado', [AdministracionController::class, 'actualizarEstado']);
+    Route::get('/admin/estadisticas', [AdministracionController::class, 'estadisticas']);
 
     // --- EMPRESAS ---
         Route::get('/empresas', [\App\Http\Controllers\Api\EmpresaController::class, 'index']);

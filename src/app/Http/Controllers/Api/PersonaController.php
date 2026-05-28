@@ -12,8 +12,15 @@ use OpenApi\Attributes as OA;
 
 class PersonaController extends Controller
 {
+    /**USO DE SWAGGER UI PARA IDENTIFICAR ERRORES
+    Mis path no tenian el prefijo v1 (el que defini en mi ruta en api.php)
+    por eso al presionar try it out me daban un 404.
+    Corregi el path y funciono con una respuesta 201.
+     */
+
     #[OA\Get(
-        path: '/personas',
+        /**Prefijo /v1 agregado */
+        path: '/v1/personas',
         operationId: 'getPersonas',
         tags: ['Personas'],
         summary: 'Listar personas',
@@ -32,27 +39,49 @@ class PersonaController extends Controller
     }
 
     #[OA\Post(
-        path: '/personas',
+        /**Prefijo /v1 agregado */
+        path: '/v1/personas',
         operationId: 'createPersona',
         tags: ['Personas'],
         summary: 'Registrar persona',
-        requestBody: new OA\RequestBody(required: true, content: new OA\JsonContent(ref: '#/components/schemas/PersonaInput')),
+        // --- Ejemplo detallado en el requestBody ---
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                example: [
+                    "email" => "talento@ejemplo.cl",
+                    "nombre" => "Juan",
+                    "apellido" => "Pérez",
+                    "nivel_educacional" => "universitaria"
+                ]
+            )
+        ),
+        // -----------------------------------------------------------------
         responses: [new OA\Response(response: 201, description: 'Creada')]
     )]
     public function store(Request $request): JsonResponse
     {
+        // Validación corregida para incluir nombre, apellido y nivel_educacional
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:personas,email',
+            'nombre' => 'required|string|max:255',
+            'apellido' => 'required|string|max:255',
+            'nivel_educacional' => 'nullable|string',
         ]);
-        if ($validator->fails()) return $this->errorResponse('Error', 422, $validator->errors()->toArray());
+
+        if ($validator->fails()) {
+            return $this->errorResponse('Error de validación', 422, $validator->errors()->toArray());
+        }
 
         $data = $validator->validated();
         $data['codigo_talento'] = 'PROV-' . date('Y') . '-' . strtoupper(Str::random(4));
+
         return $this->successResponse(Persona::create($data), 201);
     }
 
     #[OA\Get(
-        path: '/personas/{id}',
+        /**Prefijo /v1 agregado */
+        path: '/v1/personas/{id}',
         operationId: 'getPersona',
         tags: ['Personas'],
         summary: 'Obtener por ID',
@@ -66,12 +95,25 @@ class PersonaController extends Controller
     }
 
     #[OA\Put(
-        path: '/personas/{id}',
+        /**Prefijo /v1 agregado */
+        path: '/v1/personas/{id}',
         operationId: 'updatePersona',
         tags: ['Personas'],
         summary: 'Actualizar',
         parameters: [new OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'string'))],
-        requestBody: new OA\RequestBody(required: true, content: new OA\JsonContent(ref: '#/components/schemas/PersonaInput')),
+        // --- Ejemplo detallado en el requestBody ---
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                example: [
+                    "email" => "talento@ejemplo.cl",
+                    "nombre" => "Juan",
+                    "apellido" => "Pérez",
+                    "nivel_educacional" => "universitaria"
+                ]
+            )
+        ),
+        // -----------------------------------------------------------------
         responses: [new OA\Response(response: 200, description: 'OK')]
     )]
     public function update(Request $request, string $id): JsonResponse
@@ -83,7 +125,8 @@ class PersonaController extends Controller
     }
 
     #[OA\Patch(
-        path: '/personas/{id}/validar',
+        /**Prefijo /v1 agregado */
+        path: '/v1/personas/{id}/validar',
         operationId: 'validarPersona',
         tags: ['Personas'],
         summary: 'Validar',
@@ -97,7 +140,8 @@ class PersonaController extends Controller
     }
 
     #[OA\Delete(
-        path: '/personas/{id}',
+        /**Prefijo /v1 agregado */
+        path: '/v1/personas/{id}',
         operationId: 'deletePersona',
         tags: ['Personas'],
         summary: 'Desactivar',

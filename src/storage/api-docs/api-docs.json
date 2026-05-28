@@ -398,7 +398,7 @@
                 }
             }
         },
-        "/personas": {
+        "/v1/personas": {
             "get": {
                 "tags": [
                     "Personas"
@@ -447,8 +447,12 @@
                     "required": true,
                     "content": {
                         "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PersonaInput"
+                            "schema": {},
+                            "example": {
+                                "email": "talento@ejemplo.cl",
+                                "nombre": "Juan",
+                                "apellido": "Pérez",
+                                "nivel_educacional": "universitaria"
                             }
                         }
                     }
@@ -460,7 +464,7 @@
                 }
             }
         },
-        "/personas/{id}": {
+        "/v1/personas/{id}": {
             "get": {
                 "tags": [
                     "Personas"
@@ -503,8 +507,12 @@
                     "required": true,
                     "content": {
                         "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PersonaInput"
+                            "schema": {},
+                            "example": {
+                                "email": "talento@ejemplo.cl",
+                                "nombre": "Juan",
+                                "apellido": "Pérez",
+                                "nivel_educacional": "universitaria"
                             }
                         }
                     }
@@ -538,7 +546,7 @@
                 }
             }
         },
-        "/personas/{id}/validar": {
+        "/v1/personas/{id}/validar": {
             "patch": {
                 "tags": [
                     "Personas"
@@ -723,22 +731,38 @@
                 ],
                 "properties": {
                     "id": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid",
+                        "example": "550e8400-e29b-41d4-a716-446655440000"
                     },
                     "email": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "email",
+                        "example": "talento@ejemplo.cl"
                     },
                     "codigo_talento": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "TAL-2026-001"
+                    },
+                    "nombre": {
+                        "type": "string",
+                        "example": "Juan"
+                    },
+                    "apellido": {
+                        "type": "string",
+                        "example": "Pérez"
                     },
                     "nivel_educacional": {
-                        "type": "string"
+                        "type": "string",
+                        "example": "universitaria"
                     },
                     "activo": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "example": true
                     },
                     "validado": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "example": false
                     }
                 },
                 "type": "object"

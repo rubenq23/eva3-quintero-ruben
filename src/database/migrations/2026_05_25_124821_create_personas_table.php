@@ -14,6 +14,8 @@ return new class extends Migration
 
             // UK (Unique Keys)
             $table->string('email')->unique();
+            $table->string('nombre')->nullable();
+            $table->string('apellido')->nullable();
             $table->string('codigo_talento')->unique();
 
             $table->string('telefono')->nullable();
