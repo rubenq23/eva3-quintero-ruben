@@ -2,6 +2,10 @@
 
 Este repositorio almacena la evaluacion numero 3 del ramo Desarrollo Backend, aparte de la logica del codigo, en este archivo se especifica el flujo para poder probar los modulos en Swagger UI siguiendo la logica del negocio.
 
+IMPORTANTE!!!!
+
+Mi proyecto utiliza un enfoque de documentación basada en código, en lugar de crear un archivo .json manualmente, he utilice atributos de PHP (OpenApi\Attributes) directamente en mis controladores y modelos, de manera que al ejecutar el comando de generación del paquete l5-swagger, el archivo swagger.json se construye automáticamente, de esta manera se garantiza que la documentación siempre refleje el estado actual de la API.
+
 Flujo para testear Modulo Personas en Swagger UI
 
 1.	Registrar un nuevo talento
